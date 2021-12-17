@@ -3,10 +3,5 @@ enum Actions {
   incrementSecond,
   incrementThird,
   incrementFourth,
-  incrementTotal,
-  setZeroFirst,
-  setZeroSecond,
-  setZeroThird,
-  setZeroFourth,
   setZeroAll
 }

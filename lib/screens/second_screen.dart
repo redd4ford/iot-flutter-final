@@ -1,16 +1,17 @@
+import 'package:final_app/store/reducer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:final_app/store/actions.dart' as s;
 
-class SecondScreen extends StatelessWidget {
-  SecondScreen({Key? key}) : super(key: key);
+class SecondScreen extends StatefulWidget {
+  const SecondScreen({Key? key}) : super(key: key);
 
-  static const actions = [s.Actions.setZeroAll];
+  @override
+  State<SecondScreen> createState() => _SecondScreenState();
+}
 
-  int tabIndex = 0;
-  int selectedTabIndex = -1;
-
+class _SecondScreenState extends State<SecondScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,65 +22,53 @@ class SecondScreen extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: StoreConnector<List<int>, List<int>>(
-          converter: (store) => store.state,
-          builder: (context, listOfStates) {
-            return StoreConnector<List<int>, VoidCallback>(
-              converter: (store) =>
-                  () => store.dispatch(actions[selectedTabIndex]),
-              builder: (context, callback) {
-                return Row(
+      body: StoreConnector<Map<String, int>, Map<String, int>>(
+        converter: (store) => store.state,
+        builder: (context, states) {
+          return StoreConnector<Map<String, int>, VoidCallback>(
+            converter: (store) => () => store.dispatch(s.Actions.setZeroAll),
+            builder: (context, callback) {
+              return Container(
+                margin: const EdgeInsets.all(20),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        Text(
+                          '${states['firstBtnCounter']}',
+                        ),
+                        Text(
+                          '${states['secondBtnCounter']}',
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         TextButton(
-                            onPressed: listOfStates[6] == 0
-                                ? null
-                                : () {
-                                    selectedTabIndex = 0;
-                                    callback;
-                                  },
-                            child: Text('${listOfStates[0]}')),
-                        TextButton(
-                            onPressed: listOfStates[6] == 1
-                                ? null
-                                : () {
-                                    selectedTabIndex = 1;
-                                    callback;
-                                  },
-                            child: Text('${listOfStates[1]}')),
+                          onPressed: () => setState(() {
+                            reducer(states, s.Actions.setZeroAll);
+                          }),
+                          child: Text('${states['totalCounter']}'),
+                        ),
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        TextButton(
-                            onPressed: listOfStates[6] == 2
-                                ? null
-                                : () {
-                                    selectedTabIndex = 2;
-                                    callback;
-                                  },
-                            child: Text('${listOfStates[2]}')),
-                        TextButton(
-                            onPressed: listOfStates[6] == 3
-                                ? null
-                                : () {
-                                    selectedTabIndex = 3;
-                                    callback;
-                                  },
-                            child: Text('${listOfStates[3]}')),
+                        Text('${states['thirdBtnCounter']}'),
+                        Text('${states['fourthBtnCounter']}'),
                       ],
                     ),
-                    TextButton(
-                        onPressed: () {}, child: Text('${listOfStates[0]}')),
                   ],
-                );
-              },
-            );
-          }),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
